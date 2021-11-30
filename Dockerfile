@@ -2,7 +2,7 @@
 FROM golang:1.17 AS tinygo-llvm
 
 RUN apt-get update && \
-    apt-get install -y apt-utils make cmake clang-11 binutils-avr gcc-avr avr-libc ninja-build
+    apt-get install -y apt-utils make cmake clang-12 binutils-avr gcc-avr avr-libc ninja-build
 
 COPY ./Makefile /tinygo/Makefile
 
@@ -33,8 +33,9 @@ RUN cd /tinygo/ && \
 # tinygo-tools stage installs the needed dependencies to compile TinyGo programs for all platforms.
 FROM tinygo-compiler AS tinygo-tools
 
+COPY --from=tinygo-compiler /tinygo/build/tinygo /go/bin/tinygo
+
 RUN cd /tinygo/ && \
-    make wasi-libc binaryen && \
-    make gen-device -j4
+    make wasi-libc binaryen gen-device
 
 CMD ["tinygo"]
