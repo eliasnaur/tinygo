@@ -2,7 +2,7 @@
 FROM golang:1.17 AS tinygo-llvm
 
 RUN apt-get update && \
-    apt-get install -y apt-utils make cmake clang-12 binutils-avr gcc-avr avr-libc ninja-build
+    apt-get install -y apt-utils make cmake clang-11 binutils-avr gcc-avr avr-libc ninja-build
 
 COPY ./Makefile /tinygo/Makefile
 
