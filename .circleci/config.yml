@@ -211,6 +211,12 @@ jobs:
     steps:
       - test-linux:
           llvm: "12"
+  test-llvm13-go117:
+    docker:
+      - image: circleci/golang:1.17-buster
+    steps:
+      - test-linux:
+          llvm: "13"
   build-macos:
     macos:
       xcode: "11.1.0" # macOS 10.14
@@ -224,4 +230,5 @@ workflows:
     jobs:
       - test-llvm11-go115
       - test-llvm12-go116
+      - test-llvm13-go117
       - build-macos

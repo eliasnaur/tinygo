@@ -1,14 +1,14 @@
 // +build !byollvm
-// +build !llvm12
+// +build !llvm11,!llvm12
 
 package cgo
 
 /*
-#cgo linux   CFLAGS:  -I/usr/lib/llvm-11/include
-#cgo darwin  CFLAGS:  -I/usr/local/opt/llvm@11/include
-#cgo freebsd CFLAGS:  -I/usr/local/llvm11/include
-#cgo linux   LDFLAGS: -L/usr/lib/llvm-11/lib -lclang
-#cgo darwin  LDFLAGS: -L/usr/local/opt/llvm@11/lib -lclang -lffi
-#cgo freebsd LDFLAGS: -L/usr/local/llvm11/lib -lclang
+#cgo linux   CFLAGS:  -I/usr/lib/llvm-13/include
+#cgo darwin  CFLAGS:  -I/usr/local/opt/llvm@13/include
+#cgo freebsd CFLAGS:  -I/usr/local/llvm13/include
+#cgo linux   LDFLAGS: -L/usr/lib/llvm-13/lib -lclang
+#cgo darwin  LDFLAGS: -L/usr/local/opt/llvm@13/lib -lclang -lffi
+#cgo freebsd LDFLAGS: -L/usr/local/llvm13/lib -lclang
 */
 import "C"
