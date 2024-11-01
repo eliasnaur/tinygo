@@ -154,9 +154,18 @@ func valueEscapesAt(value llvm.Value) llvm.Value {
 				return use
 			}
 		case llvm.Call:
-			if !hasFlag(use, value, "nocapture") {
-				return use
+			if hasFlag(use, value, "nocapture") {
+				break
 			}
+			// If built-in append function escapes its first argument if and
+			// only if the returned slice pointer escapes.
+			if fn := use.CalledValue(); !fn.IsAFunction().IsNil() && fn.Name() == "runtime.sliceAppend" {
+				if at := elemEscapesAt(use, 0); !at.IsNil() {
+					return at
+				}
+				break
+			}
+			return use
 		case llvm.ICmp:
 			// Comparing pointers don't let the pointer escape.
 			// This is often a compiler-inserted nil check.
@@ -167,6 +176,32 @@ func valueEscapesAt(value llvm.Value) llvm.Value {
 	}
 
 	// Checked all uses, and none let the pointer value escape.
+	return llvm.Value{}
+}
+
+// elemEscapesAt is like valueEscapesAt, but for an element of a tuple value.
+func elemEscapesAt(value llvm.Value, elemIndex uint32) llvm.Value {
+	uses := getUses(value)
+	for _, use := range uses {
+		if use.IsAInstruction().IsNil() {
+			panic("expected instruction use")
+		}
+		switch use.InstructionOpcode() {
+		case llvm.ExtractValue:
+			for _, ind := range use.Indices() {
+				if ind == elemIndex {
+					if at := valueEscapesAt(use); !at.IsNil() {
+						return at
+					}
+					break
+				}
+			}
+		default:
+			if at := valueEscapesAt(use); !at.IsNil() {
+				return at
+			}
+		}
+	}
 	return llvm.Value{}
 }
 

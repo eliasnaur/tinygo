@@ -23,7 +23,7 @@ func main() {
 	s4 := make([]byte, 300) // OUT: object allocated on the heap: object size 300 exceeds maximum stack allocation size 256
 	readByteSlice(s4)
 
-	s5 := make([]int, 4) // OUT: object allocated on the heap: escapes at line 27
+	s5 := make([]int, 4)
 	_ = append(s5, 5)
 
 	s6 := make([]int, 3)
@@ -58,6 +58,11 @@ func main() {
 	var rbuf [5]rune
 	s = string(rbuf[:])
 	println(s)
+
+	sl := make([]rune, 4)
+	sl_1 := append(sl, 5)
+	sl_2 := append(sl_1, 5)
+	println(string(sl_2))
 }
 
 func derefInt(x *int) int {
